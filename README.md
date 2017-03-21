@@ -21,7 +21,7 @@ yarn add git+https://github.com/ioddly/react-native-alarms.git
 react-native link
 ```
 
-In your AndroidManifest.xml, within your <application> tag (alarms will not fire if you don't add this!)
+In your AndroidManifest.xml, within your `<application>` tag (alarms will not fire if you don't add this!)
 
 ```xml
 <receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
@@ -30,7 +30,7 @@ In your AndroidManifest.xml, within your <application> tag (alarms will not fire
 ## Usage
 
 ```javascript
-import {AndroidAlarm} from 'react-native-alarms';
+import AndroidAlarm from 'react-native-alarms';
 import {DeviceEventEmitter} from 'react-native';
 
 AndroidAlarm.setAlarm({
