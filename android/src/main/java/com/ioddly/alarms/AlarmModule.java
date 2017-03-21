@@ -38,7 +38,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     constants.put("ELAPSED_REALTIME_WAKEUP", AlarmManager.ELAPSED_REALTIME_WAKEUP);
 
     constants.put("INTERVAL_FIFTEEN_MINUTES", AlarmManager.INTERVAL_FIFTEEN_MINUTES);
-    constants.put("INTERVAL_HALF_HOUR", AlarmManager.INTERVAL_FIFTEEN_MINUTES);
+    constants.put("INTERVAL_HALF_HOUR", AlarmManager.INTERVAL_HALF_HOUR);
     constants.put("INTERVAL_HOUR", AlarmManager.INTERVAL_HOUR);
     constants.put("INTERVAL_DAY", AlarmManager.INTERVAL_DAY);
     constants.put("INTERVAL_HALF_DAY", AlarmManager.INTERVAL_HALF_DAY);
