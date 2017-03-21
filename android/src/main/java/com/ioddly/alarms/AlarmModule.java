@@ -78,7 +78,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
       Calendar calendar = Calendar.getInstance();
       calendar.setTimeInMillis(System.currentTimeMillis());
       if(opts.hasKey("date")) {
-        calendar.set(Calendar.DATE, opts.getInt("date"))
+        calendar.set(Calendar.DATE, opts.getInt("date"));
       }
       calendar.set(Calendar.HOUR_OF_DAY, opts.getInt("hour"));
       calendar.set(Calendar.MINUTE, opts.hasKey("minute") ? opts.getInt("minute") : 0);
