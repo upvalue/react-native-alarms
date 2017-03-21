@@ -77,11 +77,14 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     } else {
       Calendar calendar = Calendar.getInstance();
       calendar.setTimeInMillis(System.currentTimeMillis());
+      if(opts.hasKey("date")) {
+        calendar.set(Calendar.DATE, opts.getInt("date"))
+      }
       calendar.set(Calendar.HOUR_OF_DAY, opts.getInt("hour"));
       calendar.set(Calendar.MINUTE, opts.hasKey("minute") ? opts.getInt("minute") : 0);
       calendar.set(Calendar.SECOND, opts.hasKey("second") ? opts.getInt("second") : 0);
       ms = calendar.getTimeInMillis();
-      Log.i("RNAlarms", "RTC" + wakeup + repeating_s + " " +name + " at " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
+      Log.i("RNAlarms", "RTC" + wakeup + repeating_s + " " +name + " at " + calendar.get(Calendar.DATE) + " - "+ calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
     }
 
     if(repeating) {
