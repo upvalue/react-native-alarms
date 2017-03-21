@@ -70,3 +70,5 @@ AndroidAlarm.clearAlarm("test2");
   	```
       compile project(':react-native-alarms')
   	```
+
+4. Edit AndroidManifest.xml as described above
