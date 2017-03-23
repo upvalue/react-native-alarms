@@ -10,14 +10,25 @@ import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.SupportsWebWorkers;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.JavaScriptModule;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
+@ReactModule(name = "AlarmAndroid")
 public class AlarmModule extends ReactContextBaseJavaModule {
+    /*
+  public static interface AlarmEmitter extends JavaScriptModule {
+    void emit(String eventName, @Nullable Object data);
+  }
+  */
+
   public AlarmModule(ReactApplicationContext reactContext) {
     super(reactContext);
     Log.i("RN_ALARMS", "AlarmModule initialized");
@@ -80,7 +91,9 @@ public class AlarmModule extends ReactContextBaseJavaModule {
       if(opts.hasKey("date")) {
         calendar.set(Calendar.DATE, opts.getInt("date"));
       }
-      calendar.set(Calendar.HOUR_OF_DAY, opts.getInt("hour"));
+      if(opts.hasKey("hour")) {
+        calendar.set(Calendar.HOUR_OF_DAY, opts.getInt("hour"));
+      }
       calendar.set(Calendar.MINUTE, opts.hasKey("minute") ? opts.getInt("minute") : 0);
       calendar.set(Calendar.SECOND, opts.hasKey("second") ? opts.getInt("second") : 0);
       ms = calendar.getTimeInMillis();

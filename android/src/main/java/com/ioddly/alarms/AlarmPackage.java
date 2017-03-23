@@ -6,20 +6,23 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
 public class AlarmPackage implements ReactPackage {
 
   @Override
-  public List<Class<? extends JavaScriptModule>> createJSModules() {
+  public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
     return Collections.emptyList();
   }
 
   @Override
-  public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-    return Collections.emptyList();
+  public List<Class<? extends JavaScriptModule>> createJSModules() {
+    List<Class<? extends JavaScriptModule>> jsModules = new ArrayList<Class<? extends JavaScriptModule>>(Arrays.asList(AlarmEmitter.class));
+    return jsModules;
   }
 
   @Override

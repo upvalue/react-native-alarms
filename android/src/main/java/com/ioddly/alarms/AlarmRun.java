@@ -10,16 +10,20 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+//import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import static com.facebook.react.common.ApplicationHolder.getApplication;
+// FIXME: getApplication is deprecated. I am not clear on what the proper way to do this is.
 
 public class AlarmRun extends BroadcastReceiver {
+
     private static void fire(ReactContext reactContext, String alarmName) {
-        Log.i("RNAlarms", "firing alarm-" + alarmName);
-        WritableMap params = Arguments.createMap();
-        params.putString("name", alarmName);
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("alarm-"+alarmName, params);
+        Log.i("RNAlarms", "firing alarm '" + alarmName + "'");
+        reactContext.getJSModule(AlarmEmitter.class).emit(alarmName, null);
+
+        //WritableMap params = Arguments.createMap();
+        //params.putString("name", alarmName);
+        //reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("alarm-"+alarmName, params);
     }
 
     public void onReceive(Context context, Intent intent) {

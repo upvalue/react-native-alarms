@@ -1,3 +1,4 @@
+test
 A react-native library for interacting with Android alarms.
 
 ## Warning
@@ -21,7 +22,7 @@ yarn add git+https://github.com/ioddly/react-native-alarms.git
 react-native link
 ```
 
-In your AndroidManifest.xml, within your `<application>` tag (alarms will not fire if you don't add this!)
+In your AndroidManifest.xml, within your `<application>` tag (alarms will fail silently if you don't add this!)
 
 ```xml
 <receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
@@ -31,7 +32,6 @@ In your AndroidManifest.xml, within your `<application>` tag (alarms will not fi
 
 ```javascript
 import AndroidAlarm from 'react-native-alarms';
-import {DeviceEventEmitter} from 'react-native';
 
 AndroidAlarm.setAlarm({
   name: "test", /* required, will be used to name the event fired */
@@ -39,21 +39,28 @@ AndroidAlarm.setAlarm({
   trigger: 20000, /* milliseconds, for elapsed realtime clocks */
 });
 
-DeviceEventEmitter.addListener('alarm-test', (e) => {
+AndroidAlarm.AlarmEmitter.addListener('test', (e) => {
   console.log('Received alarm-test');
   AndroidAlarm.clearAlarm("test");
 });
+
+/* Alarms are cancelled by name */
+AndroidAlarm.clearAlarm("test");
+
+/* Or you can remove listeners */
+AndroidAlarm.AlarmEmitter.removeAllListeners("test");
 
 /* 8AM wakeup alarm */
 AndroidAlarm.setAlarm({
   name: "test2",
   type: AndroidAlarm.RTC_WAKEUP,
+  /* Time fields -- passed to Java's Calendar class. None are required: minutes and seconds will default to 0 if not
+  provided, hours and date will default to the current time */
+  /* date: 5 -- Date of the month */
   hour: 8, minute: 0, second: 0,
   interval: AndroidAlarm.INTERVAL_DAY /* if interval is included, alarm will be a repeating alarm */
 });
 
-/* Alarms are cancelled by name */
-AndroidAlarm.clearAlarm("test2");
 ```
 
 ## Manual linking
