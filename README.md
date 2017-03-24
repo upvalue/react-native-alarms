@@ -1,4 +1,3 @@
-test
 A react-native library for interacting with Android alarms.
 
 ## Warning
@@ -54,11 +53,12 @@ AndroidAlarm.AlarmEmitter.removeAllListeners("test");
 AndroidAlarm.setAlarm({
   name: "test2",
   type: AndroidAlarm.RTC_WAKEUP,
-  /* Time fields -- passed to Java's Calendar class. None are required: minutes and seconds will default to 0 if not
-  provided, hours and date will default to the current time */
+  // Time fields -- passed to Java's Calendar class. These will default to the current time if not provided
+  // you should most likely set them all.
   /* date: 5 -- Date of the month */
   hour: 8, minute: 0, second: 0,
-  interval: AndroidAlarm.INTERVAL_DAY /* if interval is included, alarm will be a repeating alarm */
+  // If interval is set, alarm will be repeating
+  interval: AndroidAlarm.INTERVAL_DAY 
 });
 
 ```

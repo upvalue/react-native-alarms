@@ -75,12 +75,11 @@ public class AlarmModule extends ReactContextBaseJavaModule {
 
     AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     String name = opts.getString("name");
-    PendingIntent pending = createPending(name);
 
     long ms = 0;
 
     String wakeup = (type == AlarmManager.ELAPSED_REALTIME_WAKEUP || type == AlarmManager.RTC_WAKEUP) ? "_WAKEUP" : "";
-    String repeating_s = repeating ? " (repeating) " : "";
+    String repeating_s = repeating ? " (repeating every "+opts.getInt("interval")+"ms) " : "";
 
     if(type == AlarmManager.ELAPSED_REALTIME || type == AlarmManager.ELAPSED_REALTIME_WAKEUP) {
       ms = SystemClock.elapsedRealtime() + opts.getInt("trigger");
@@ -94,11 +93,17 @@ public class AlarmModule extends ReactContextBaseJavaModule {
       if(opts.hasKey("hour")) {
         calendar.set(Calendar.HOUR_OF_DAY, opts.getInt("hour"));
       }
-      calendar.set(Calendar.MINUTE, opts.hasKey("minute") ? opts.getInt("minute") : 0);
-      calendar.set(Calendar.SECOND, opts.hasKey("second") ? opts.getInt("second") : 0);
+      if(opts.hasKey("minute")) {
+        calendar.set(Calendar.MINUTE, opts.getInt("minute"));
+      }
+      if(opts.hasKey("second")) {
+        calendar.set(Calendar.MINUTE, opts.getInt("second"));
+      }
       ms = calendar.getTimeInMillis();
       Log.i("RNAlarms", "RTC" + wakeup + repeating_s + " " +name + " at " + calendar.get(Calendar.DATE) + " - "+ calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
     }
+
+    PendingIntent pending = createPending(name);
 
     if(repeating) {
       int interval = opts.getInt("interval");
