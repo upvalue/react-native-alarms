@@ -38,15 +38,15 @@ AndroidAlarm.setAlarm({
   trigger: 20000, /* milliseconds, for elapsed realtime clocks */
 });
 
+/* Alarms are cancelled by name */
+AndroidAlarm.clearAlarm("test");
+
 AndroidAlarm.AlarmEmitter.addListener('test', (e) => {
   console.log('Received alarm-test');
   AndroidAlarm.clearAlarm("test");
 });
 
-/* Alarms are cancelled by name */
-AndroidAlarm.clearAlarm("test");
-
-/* Or you can remove listeners */
+/* Remove listeners */
 AndroidAlarm.AlarmEmitter.removeAllListeners("test");
 
 /* 8AM wakeup alarm */
@@ -55,7 +55,7 @@ AndroidAlarm.setAlarm({
   type: AndroidAlarm.RTC_WAKEUP,
   // Time fields -- passed to Java's Calendar class. These will default to the current time if not provided
   // you should most likely set them all.
-  /* date: 5 -- Date of the month */
+  date: 5 // Date of the month
   hour: 8, minute: 0, second: 0,
   // If interval is set, alarm will be repeating
   interval: AndroidAlarm.INTERVAL_DAY 

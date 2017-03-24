@@ -31,7 +31,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
 
   public AlarmModule(ReactApplicationContext reactContext) {
     super(reactContext);
-    Log.i("RN_ALARMS", "AlarmModule initialized");
+    Log.i("RNAlarms", "AlarmModule initialized");
   }
 
   @Override
