@@ -63,6 +63,10 @@ AndroidAlarm.setAlarm({
 
 ```
 
+## Checking that alarms exist
+
+`adb shell dumpsys alarm`
+
 ## Manual linking
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
