@@ -68,13 +68,11 @@ public class AlarmModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setAlarm(ReadableMap opts) {
-    int type = opts.getInt("type");
+  public void setAlarm(final String name, final int type, final ReadableMap opts) {
     boolean repeating = opts.hasKey("interval");
     Context context = getReactApplicationContext();
 
     AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    String name = opts.getString("name");
 
     long ms = 0;
 

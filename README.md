@@ -29,36 +29,35 @@ In your AndroidManifest.xml, within your `<application>` tag (alarms will fail s
 
 ## Usage
 
-```javascript
-import AndroidAlarm from 'react-native-alarms';
+### setAlarm(name: string, type: int, opts: object)
+### clearAlarm(name: string)
 
-AndroidAlarm.setAlarm({
-  name: "test", /* required, will be used to name the event fired */
-  type: AndroidAlarm.ELAPSED_REALTIME, /* required */,
-  trigger: 20000, /* milliseconds, for elapsed realtime clocks */
+```javascript
+import AlarmAndroid from 'react-native-alarms';
+
+AlarmAndroid.setAlarm('test', AlarmAndroid.ELAPSED_REALTIME, {
+  trigger: 20000, /* required, milliseconds, for elapsed realtime clocks */
 });
 
 /* Alarms are cancelled by name */
-AndroidAlarm.clearAlarm("test");
+AlarmAndroid.clearAlarm("test");
 
-AndroidAlarm.AlarmEmitter.addListener('test', (e) => {
+AlarmAndroid.AlarmEmitter.addListener('test', (e) => {
   console.log('Received alarm-test');
-  AndroidAlarm.clearAlarm("test");
+  AlarmAndroid.clearAlarm("test");
 });
 
-/* Remove listeners */
-AndroidAlarm.AlarmEmitter.removeAllListeners("test");
+/* Remove listeners (this will not clear alarms, but is recommended) */
+AlarmAndroid.AlarmEmitter.removeAllListeners("test");
 
 /* 8AM wakeup alarm */
-AndroidAlarm.setAlarm({
-  name: "test2",
-  type: AndroidAlarm.RTC_WAKEUP,
+AlarmAndroid.setAlarm('test2', AlarmAndroid.RTC_WAKEUP, {
   // Time fields -- passed to Java's Calendar class. These will default to the current time if not provided
   // you should most likely set them all.
   date: 5 // Date of the month
   hour: 8, minute: 0, second: 0,
   // If interval is set, alarm will be repeating
-  interval: AndroidAlarm.INTERVAL_DAY 
+  interval: AlarmAndroid.INTERVAL_DAY 
 });
 
 ```

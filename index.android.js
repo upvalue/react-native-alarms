@@ -11,10 +11,18 @@ AlarmEmitter = new AlarmEmitter();
 
 BatchedBridge.registerCallableModule('AlarmEmitter', AlarmEmitter);
 
-let RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, setAlarm, clearAlarm, INTERVAL_FIFTEEN_MINUTES,
+let RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, clearAlarm, INTERVAL_FIFTEEN_MINUTES,
   INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY, INTERVAL_HALF_DAY;
 
-({RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, setAlarm, clearAlarm,
+({RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, clearAlarm,
   INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY, INTERVAL_HALF_DAY} = AlarmAndroid);
+
+function setAlarm(name, type, opts) {
+  if(name == "boot") {
+    console.warn("RNAlarms: boot is a reserved event name");
+  } else {
+    AlarmAndroid.setAlarm(name, type, opts);
+  }
+}
 
 export default {RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, setAlarm, clearAlarm, AlarmEmitter};
