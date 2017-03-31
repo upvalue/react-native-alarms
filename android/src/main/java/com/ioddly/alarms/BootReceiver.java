@@ -10,35 +10,35 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
-//import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import static com.facebook.react.common.ApplicationHolder.getApplication;
-// FIXME: getApplication is deprecated. I am not clear on what the proper way to do this is.
 
-public class AlarmRun extends BroadcastReceiver {
+public class BootReceiver extends BroadcastReceiver {
+    final static String alarmName = "boot";
 
-    private static void fire(ReactContext reactContext, String alarmName) {
+    private static void fire(ReactContext reactContext) {
         Log.i("RNAlarms", "firing alarm '" + alarmName + "'");
         reactContext.getJSModule(AlarmEmitter.class).emit(alarmName, null);
     }
 
+    @Override
     public void onReceive(Context context, Intent intent) {
-        final String alarmName = intent.getStringExtra("name");
+        Log.i("RNAlarms", "BOOT EVENT RECEIVED");
+        // TODO code duplication with AlarmRun
         ReactInstanceManager manager = ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager();
         ReactContext reactContext = manager.getCurrentReactContext();
 
         if(reactContext != null) {
-            fire(reactContext, alarmName);
+            BootReceiver.fire(reactContext);
         } else {
             manager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
                 public void onReactContextInitialized(ReactContext context) {
-                    AlarmRun.fire(context, alarmName);
+                    BootReceiver.fire(context);
                 }
             });
             if(!manager.hasStartedCreatingInitialContext()) {
                 manager.createReactContextInBackground();
             }
         }
-
     }
 }

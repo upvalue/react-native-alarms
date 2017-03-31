@@ -21,15 +21,35 @@ yarn add git+https://github.com/ioddly/react-native-alarms.git
 react-native link
 ```
 
-In your AndroidManifest.xml, within your `<application>` tag (alarms will fail silently if you don't add this!)
+In your AndroidManifest.xml.
 
 ```xml
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+```
+
+And within your `<application ...>` tag (alarms will fail silently if you don't add this!)
+
+```xml
+<receiver android:name="com.ioddly.alarms.BootReceiver" android:enabled="true">
+  <intent-filter>
+    <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+  </intent-filter>
+</receiver>
+
 <receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
 ```
 
 ## Usage
 
 ### setAlarm(name: string, type: int, opts: object)
+
+NAME is the name of the event that will be fired. Should not be `boot`.
+
+TYPE should be one of the AlarmManager type constants: `RTC`, `RTC_WAKEUP`, `ELAPSED_REALTIME` or `ELAPSED_REALTIME_WAKEUP`.
+
+OPTS contains information on when to fire, different for `RTC` and `ELAPSED_REALTIME` alarms. If an interval is provided,
+react-native-alarms will make the alarm repeating.
+
 ### clearAlarm(name: string)
 
 ```javascript
@@ -47,7 +67,7 @@ AlarmAndroid.AlarmEmitter.addListener('test', (e) => {
   AlarmAndroid.clearAlarm("test");
 });
 
-/* Remove listeners (this will not clear alarms, but is recommended) */
+/* Remove listeners (this will not clear alarms on the Android side, but is recommended when an alarm is removed) */
 AlarmAndroid.AlarmEmitter.removeAllListeners("test");
 
 /* 8AM wakeup alarm */
@@ -58,6 +78,12 @@ AlarmAndroid.setAlarm('test2', AlarmAndroid.RTC_WAKEUP, {
   hour: 8, minute: 0, second: 0,
   // If interval is set, alarm will be repeating
   interval: AlarmAndroid.INTERVAL_DAY 
+});
+
+/* If you want to persist alarms across boots, you'll have to use this: */
+AlarmAndroid.AlarmEmitter.addListener('boot', (e) => {
+  console.log("App booted");
+  // restore alarms
 });
 
 ```
