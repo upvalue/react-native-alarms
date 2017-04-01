@@ -52,6 +52,8 @@ react-native-alarms will make the alarm repeating.
 
 ### clearAlarm(name: string)
 
+## Example code
+
 ```javascript
 import AlarmAndroid from 'react-native-alarms';
 
@@ -88,9 +90,13 @@ AlarmAndroid.AlarmEmitter.addListener('boot', (e) => {
 
 ```
 
-## Checking that alarms exist
+## Handy ADB commands
 
-`adb shell dumpsys alarm`
+Show alarms: `adb shell dumpsys alarm`
+
+Alarms should appear with your package name next to them.
+
+Simulate boot event: `adb shell am broadcast -a android.intent.action.BOOT_COMPLETED -p <your package name>`
 
 ## Manual linking
 
