@@ -8,18 +8,20 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.SupportsWebWorkers;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.JavaScriptModule;
+import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.ReactApplication;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
+
+import static com.facebook.react.common.ApplicationHolder.getApplication;
 
 @ReactModule(name = "AlarmAndroid")
 public class AlarmModule extends ReactContextBaseJavaModule {

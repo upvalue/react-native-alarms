@@ -20,8 +20,7 @@ In terminal
 yarn add git+https://github.com/ioddly/react-native-alarms.git
 react-native link
 ```
-
-In your AndroidManifest.xml.
+In your AndroidManifest.xml
 
 ```xml
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -30,13 +29,19 @@ In your AndroidManifest.xml.
 And within your `<application ...>` tag (alarms will fail silently if you don't add this!)
 
 ```xml
-<receiver android:name="com.ioddly.alarms.BootReceiver" android:enabled="true">
+<receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
+```
+
+Add this within your `<application ...>` tag only if you want to launch your application at boot time so that alarms
+can be restored.
+
+```xml
+<receiver android:name="com.ioddly.alarms.BootLauncher" android:enabled="true">
   <intent-filter>
-    <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+    <action android:name="android.intent.action.BOOT_COMPLETED" />
+    <category android:name="android.intent.category.DEFAULT" />
   </intent-filter>
 </receiver>
-
-<receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
 ```
 
 ## Usage
@@ -82,12 +87,6 @@ AlarmAndroid.setAlarm('test2', AlarmAndroid.RTC_WAKEUP, {
   interval: AlarmAndroid.INTERVAL_DAY 
 });
 
-/* If you want to persist alarms across boots, you'll have to use this: */
-AlarmAndroid.AlarmEmitter.addListener('boot', (e) => {
-  console.log("App booted");
-  // restore alarms
-});
-
 ```
 
 ## Handy ADB commands
@@ -95,8 +94,6 @@ AlarmAndroid.AlarmEmitter.addListener('boot', (e) => {
 Show alarms: `adb shell dumpsys alarm`
 
 Alarms should appear with your package name next to them.
-
-Simulate boot event: `adb shell am broadcast -a android.intent.action.BOOT_COMPLETED -p <your package name>`
 
 ## Manual linking
 

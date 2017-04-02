@@ -10,7 +10,6 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
-//import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import static com.facebook.react.common.ApplicationHolder.getApplication;
 // FIXME: getApplication is deprecated. I am not clear on what the proper way to do this is.
