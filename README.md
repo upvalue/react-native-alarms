@@ -33,7 +33,7 @@ And within your `<application ...>` tag (alarms will fail silently if you don't 
 ```
 
 Add this within your `<application ...>` tag only if you want to launch your application at boot time so that alarms
-can be restored.
+can be restored. 
 
 ```xml
 <receiver android:name="com.ioddly.alarms.BootLauncher" android:enabled="true">

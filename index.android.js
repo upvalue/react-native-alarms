@@ -21,4 +21,5 @@ function setAlarm(name, type, opts) {
   AlarmAndroid.setAlarm(name, type, opts);
 }
 
-export default {RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, setAlarm, clearAlarm, AlarmEmitter};
+export default {RTC, RTC_WAKEUP, ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, setAlarm, clearAlarm, AlarmEmitter,
+  INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY, INTERVAL_HALF_DAY};
