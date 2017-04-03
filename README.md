@@ -57,6 +57,18 @@ react-native-alarms will make the alarm repeating.
 
 ### clearAlarm(name: string)
 
+### Constants
+
+#### `type`
+
+`RTC`, `RTC_WAKEUP`, `ELAPSED_REALTIME`, `ELAPSED_REALTIME_WAKEUP`
+
+#### `interval`
+
+`INTERVAL_FIFTEEN_MINUTES`, `INTERVAL_HALF_HOUR`, `INTERVAL_HOUR`, `INTERVAL_DAY`, `INTERVAL_HALF_DAY`
+
+Intervals may also be a number in milliseconds, minimum `60000`.
+
 ## Example code
 
 ```javascript
