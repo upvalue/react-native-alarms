@@ -20,20 +20,20 @@ In terminal
 yarn add git+https://github.com/ioddly/react-native-alarms.git
 react-native link
 ```
-In your AndroidManifest.xml
-
-```xml
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-```
-
-And within your `<application ...>` tag (alarms will fail silently if you don't add this!)
+In your AndroidManifest.xml  add this within within your `<application ...>` tag (alarms will fail silently if you
+don't add this!)
 
 ```xml
 <receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
 ```
 
-Add this within your `<application ...>` tag only if you want to launch your application at boot time so that alarms
-can be restored. 
+If you want your application to launch at boot, so alarms can be restored, add this with your permissions:
+
+```xml
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+```
+
+And this within your `<application ...>` 
 
 ```xml
 <receiver android:name="com.ioddly.alarms.BootLauncher" android:enabled="true">
