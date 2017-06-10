@@ -1,4 +1,4 @@
-A react-native library for interacting with Android alarms.
+A react-native library for interacting with Android alarms. Requires RN 0.44 or greater.
 
 ## Warning
 
@@ -43,6 +43,8 @@ And this within your `<application ...>`
   </intent-filter>
 </receiver>
 ```
+
+Note that this option may be irritating to users; use sparingly.
 
 ## Usage
 

@@ -25,6 +25,7 @@ import static com.facebook.react.common.ApplicationHolder.getApplication;
 
 @ReactModule(name = "AlarmAndroid")
 public class AlarmModule extends ReactContextBaseJavaModule {
+
     /*
   public static interface AlarmEmitter extends JavaScriptModule {
     void emit(String eventName, @Nullable Object data);
