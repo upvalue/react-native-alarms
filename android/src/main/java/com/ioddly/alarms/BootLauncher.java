@@ -5,16 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.facebook.react.bridge.ReactContext;
-
+/**
+ * Boot launcher. Completely optional; starts the application on boot so that alarms can be restored.
+ * May be irritating to users, use sparingly.
+ */
 public class BootLauncher extends BroadcastReceiver {
-    final static String alarmName = "boot";
-
-    public static void fire(ReactContext reactContext) {
-        Log.i("RNAlarms", "firing alarm '" + alarmName + "'");
-        reactContext.getJSModule(AlarmEmitter.class).emit(alarmName, null);
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if(!(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))) {

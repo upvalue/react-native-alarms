@@ -8,30 +8,21 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.module.annotations.ReactModule;
-import com.facebook.react.ReactApplication;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.facebook.react.common.ApplicationHolder.getApplication;
-
 @ReactModule(name = "AlarmAndroid")
 public class AlarmModule extends ReactContextBaseJavaModule {
-
-    /*
-  public static interface AlarmEmitter extends JavaScriptModule {
-    void emit(String eventName, @Nullable Object data);
-  }
-  */
-
   public AlarmModule(ReactApplicationContext reactContext) {
     super(reactContext);
     Log.i("RNAlarms", "AlarmModule initialized");
@@ -43,6 +34,9 @@ public class AlarmModule extends ReactContextBaseJavaModule {
   }
 
   @Override
+  /**
+   * Return constants for use in JS code
+   */
   public Map<String, Object> getConstants() {
     final Map<String, Object> constants = new HashMap<>();
 
@@ -60,16 +54,41 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     return constants;
   }
 
-  private PendingIntent createPending(String name) {
+  /**
+   * Creates a PendingIntent for an alarm
+   * @param name Name of the alarm
+   * @param noCreate Pass FLAG_NO_CREATE if true; used to check if an alarm already exists.
+   * @return
+   */
+  private PendingIntent createPending(final String name, final boolean noCreate) {
     Context context = getReactApplicationContext();
     Intent intent = new Intent(context, AlarmRun.class);
     intent.putExtra("name", name);
     // This is so alarms may be cancelled
     intent.setAction(name);
     intent.setData(Uri.parse("http://"+name));
-    return PendingIntent.getBroadcast(context, 0, intent, 0);
+    return PendingIntent.getBroadcast(context, 0, intent, noCreate ? PendingIntent.FLAG_NO_CREATE : 0);
   }
 
+  @ReactMethod
+  /**
+   * React method: Check if an alarm exists.
+   * @param name Alarm name
+   * @param promise JS promise
+   */
+  public void alarmExists(final String name, final Promise promise) {
+      boolean exists = createPending(name, true) != null;
+      WritableArray args =  Arguments.createArray();
+      args.pushBoolean(exists);
+      promise.resolve(args);
+  }
+
+  /**
+   * Set a new alarm
+   * @param name Alarm name
+   * @param type Android alarm type
+   * @param opts Options
+   */
   @ReactMethod
   public void setAlarm(final String name, final int type, final ReadableMap opts) {
     boolean repeating = opts.hasKey("interval");
@@ -104,7 +123,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
       Log.i("RNAlarms", "RTC" + wakeup + repeating_s + " " +name + " at " + calendar.get(Calendar.DATE) + " - "+ calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
     }
 
-    PendingIntent pending = createPending(name);
+    PendingIntent pending = createPending(name, false);
 
     if(repeating) {
       int interval = opts.getInt("interval");
@@ -114,10 +133,14 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     }
   }
 
+  /**
+   * Clear an existing alarm
+   * @param name Alarm name
+   */
   @ReactMethod
   public void clearAlarm(String name) {
     Log.i("RNAlarms", "Clearing alarm '"+name+"'");
-    ((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE)).cancel(createPending(name));
+    ((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE)).cancel(createPending(name, true));
   }
 }
 
