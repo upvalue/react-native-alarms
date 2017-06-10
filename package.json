@@ -12,6 +12,6 @@
   "author": "",
   "license": "",
   "peerDependencies": {
-    "react-native": ">=0.33"
+    "react-native": ">=0.44"
   }
 }
