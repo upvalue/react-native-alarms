@@ -85,13 +85,15 @@ Same as above, but results in an RTC alarm with the given Date object used to in
 Returns a promise which will be called with an array containing a single boolean indicating whether a PendingIntent
 exists with the given name.
 
-Usage: ```js
+Usage: 
+```js
 alarmExists('alarm1').then(([exists]) => console.log(`alarm1 ${exists ? 'exists' : 'does not exist'}`));
 ```
 
 ### setAlarm(name: string, type: number, opts: Object)
 
-This is the Java alarm-setting method 
+This is the Java alarm-setting method. See the Java code for the fields of the OPTS object. You shouldn't have to use
+this.
 
 ### clearAlarm(name: string)
 
@@ -100,7 +102,7 @@ Clears an alarm with the given name. Has no effect if called with an alarm that 
 ### launchMainActivity()
 
 A convenience method which can be used to launch the main activity when an alarm goes off. For e.g. an alarm clock
-application. May be irritating to users, use sparingly and prefer notifications.
+application. May be irritating to users if an app launches when they do not expect it, use sparingly. 
 
 ### AlarmEmitter
 
