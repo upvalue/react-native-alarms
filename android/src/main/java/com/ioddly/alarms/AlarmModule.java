@@ -57,17 +57,37 @@ public class AlarmModule extends ReactContextBaseJavaModule {
   /**
    * Creates a PendingIntent for an alarm
    * @param name Name of the alarm
-   * @param noCreate Pass FLAG_NO_CREATE if true; used to check if an alarm already exists.
+   * @param flags PendingIntent flags
    * @return
    */
-  private PendingIntent createPending(final String name, final boolean noCreate) {
+  private PendingIntent createPending(final String name, final int flags) {
     Context context = getReactApplicationContext();
     Intent intent = new Intent(context, AlarmRun.class);
     intent.putExtra("name", name);
     // This is so alarms may be cancelled
     intent.setAction(name);
     intent.setData(Uri.parse("http://"+name));
-    return PendingIntent.getBroadcast(context, 0, intent, noCreate ? PendingIntent.FLAG_NO_CREATE : 0);
+    return PendingIntent.getBroadcast(context, 0, intent, flags);
+  }
+
+  /**
+   * Check if an alarm exists
+   * @param name Alarm name
+   * @return true if alarm exists
+   */
+  private boolean jAlarmExists(final String name) {
+    return createPending(name, PendingIntent.FLAG_NO_CREATE) != null;
+  }
+
+  /** Clear an alarm by name */
+  private void jClearAlarm(final String name) {
+    PendingIntent pending = createPending(name, PendingIntent.FLAG_NO_CREATE);
+    if(pending != null) {
+      pending.cancel();
+      ((AlarmManager) getReactApplicationContext().getSystemService(Context.ALARM_SERVICE)).cancel(pending);
+    } else {
+      Log.i("RNAlarms", "No PendingIntent found for alarm '"+name+"'");
+    }
   }
 
   @ReactMethod
@@ -77,9 +97,8 @@ public class AlarmModule extends ReactContextBaseJavaModule {
    * @param promise JS promise
    */
   public void alarmExists(final String name, final Promise promise) {
-      boolean exists = createPending(name, true) != null;
       WritableArray args =  Arguments.createArray();
-      args.pushBoolean(exists);
+      args.pushBoolean(jAlarmExists(name));
       promise.resolve(args);
   }
 
@@ -120,10 +139,17 @@ public class AlarmModule extends ReactContextBaseJavaModule {
         calendar.set(Calendar.SECOND, opts.getInt("second"));
       }
       ms = calendar.getTimeInMillis();
-      Log.i("RNAlarms", "RTC" + wakeup + repeating_s + " " +name + " at " + calendar.get(Calendar.DATE) + " - "+ calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
+      Log.i("RNAlarms", "RTC" + wakeup + repeating_s + " " +name + " at date: " + calendar.get(Calendar.DATE) + " - h:m:s "+ calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
     }
 
-    PendingIntent pending = createPending(name, false);
+    PendingIntent pending;
+    if(jAlarmExists(name)) {
+      Log.i("RNAlarms", "PendingIntent already exists for alarm '"+name+"'; updating!");
+      jClearAlarm(name);
+      pending = createPending(name, PendingIntent.FLAG_UPDATE_CURRENT);
+    } else {
+      pending = createPending(name, 0);
+    }
 
     if(repeating) {
       int interval = opts.getInt("interval");
@@ -133,6 +159,13 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     }
   }
 
+  /** Find and launch the main activity */
+  @ReactMethod
+  public void launchMainActivity() {
+    AlarmHelper.launchMainActivity(getReactApplicationContext());
+  }
+
+
   /**
    * Clear an existing alarm
    * @param name Alarm name
@@ -140,7 +173,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void clearAlarm(String name) {
     Log.i("RNAlarms", "Clearing alarm '"+name+"'");
-    ((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE)).cancel(createPending(name, true));
+    jClearAlarm(name);
   }
 }
 

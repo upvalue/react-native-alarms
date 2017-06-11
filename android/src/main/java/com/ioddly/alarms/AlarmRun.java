@@ -17,7 +17,7 @@ public class AlarmRun extends BroadcastReceiver {
      * @param reactContext
      * @param alarmName
      */
-    private static void fire(ReactContext reactContext, String alarmName) {
+    public static void fire(ReactContext reactContext, String alarmName) {
         if(reactContext.hasActiveCatalystInstance()) {
             Log.i("RNAlarms", "Firing alarm '" + alarmName + "'");
             reactContext.getJSModule(AlarmEmitter.class).emit(alarmName, null);
@@ -39,7 +39,16 @@ public class AlarmRun extends BroadcastReceiver {
                     Log.i("RNAlarms", "Attempting to fire alarm '" + alarmName + "'");
                     fire(recontext, alarmName);
                 } else {
-                    Log.i("RNAlarms", "Application is closed; not firing alarm '" + alarmName + "'");
+                    Log.i("RNAlarms", "Application is closed; attempting to launch and fire alarm '" + alarmName + "'");
+                    manager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
+                        public void onReactContextInitialized(ReactContext context) {
+                            Log.i("RNAlarms", "Attempting to fire alarm '" + alarmName + "'");
+                           fire(context, alarmName);
+                        }
+                    });
+                    if(!manager.hasStartedCreatingInitialContext()) {
+                        manager.createReactContextInBackground();
+                    }
                 }
             }
         });

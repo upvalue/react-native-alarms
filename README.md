@@ -2,8 +2,9 @@ A react-native library for interacting with Android alarms. Requires RN 0.44 or 
 
 ## Warning
 
-This library is in alpha condition. I am currently only using an RTC_WAKEUP repeating alarm in production. Make sure to
-test that alarms fire properly in the desired manner before depending on them.
+This library is in hyper-alpha condition. Make sure to test that alarms fire properly in the desired manner before
+depending on them. APIs are subject to break, so pin by git commit. And you should probably use remote notifications
+anyway!
 
 ## Documentation
 
@@ -12,9 +13,7 @@ everything applies to this library as well.
 
 Specifically: Many applications will be better served by using GCM, and all repeating alarms are inexact.
 
-
-
-## Installation
+## Installation (ALARMS WILL FAIL SILENTLY IF YOU DON'T EDIT AndroidManifest.xml)
 
 In terminal
 
@@ -29,7 +28,8 @@ don't add this!)
 <receiver android:name="com.ioddly.alarms.AlarmRun" android:enabled="true"></receiver> 
 ```
 
-If you want your application to launch at boot, so alarms can be restored, add this with your permissions:
+Optional: If you want your application to start on boot and fire a special @boot event, so alarms can be restored, add
+this with your permissions:
 
 ```xml
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -46,20 +46,75 @@ And this within your `<application ...>`
 </receiver>
 ```
 
-Note that this option may be irritating to users; use sparingly.
+## PendingIntents and Alarms
+
+react-native-alarm creates a PendingIntent for each named alarm. The name is used to check whether alarms already
+exist. It is your responsibility to manage alarms by name. If you re-use an alarm's name, it will be updated
+to the new parameters.
 
 ## Usage
 
-### setAlarm(name: string, type: int, opts: object)
+An Error will be thrown if arguments are provided with the incorrect type.
 
-NAME is the name of the event that will be fired. Should not be `boot`.
+**IF THE APPLICATION HAS BEEN CLOSED, ALARMS GOING OFF WILL RESULT IN THE APPLICATION BEING STARTED. BE AWARE OF THIS
+IF YOU ARE DOING EXPENSIVE THINGS ON APPLICATION START.**
 
-TYPE should be one of the AlarmManager type constants: `RTC`, `RTC_WAKEUP`, `ELAPSED_REALTIME` or `ELAPSED_REALTIME_WAKEUP`.
+### alarmSetElapsedRealtime(name: string, trigger: number, interval?: number)
 
-OPTS contains information on when to fire, different for `RTC` and `ELAPSED_REALTIME` alarms. If an interval is provided,
-react-native-alarms will make the alarm repeating.
+Creates an ELAPSED_REALTIME alarm.
+
+NAME is the name of the event that will be fired when the alarm goes off.
+
+TRIGGER is when the alarm will be triggered, in milliseconds.
+
+INTERVAL determines whether the alarm will be a repeating alarm, defaults to non-repeating. Can be either one of the
+provided interval constants, or a number in milliseconds above 60000 (alarms have a minimum interval of one minute,
+this is Android behavior). All repeating alarms are inexact.
+
+### alarmSetElapsedRealtimeWakeup
+
+Same arguments as above, but creates an ELAPSED_REALTIME_WAKEUP alarm.
+
+### alarmSetRTC(name: string, date: Date, interval?: number)
+### alarmSetRTCWakeup(name: string, date: Date, interval?: number)
+
+Same as above, but results in an RTC alarm with the given Date object used to initialize a Java Calendar.
+
+### alarmExists(name: string): Promise
+
+Returns a promise which will be called with an array containing a single boolean indicating whether a PendingIntent
+exists with the given name.
+
+Usage: ```js
+alarmExists('alarm1').then(([exists]) => console.log(`alarm1 ${exists ? 'exists' : 'does not exist'}`));
+```
+
+### setAlarm(name: string, type: number, opts: Object)
+
+This is the Java alarm-setting method 
 
 ### clearAlarm(name: string)
+
+Clears an alarm with the given name. Has no effect if called with an alarm that does not exist.
+
+### launchMainActivity()
+
+A convenience method which can be used to launch the main activity when an alarm goes off. For e.g. an alarm clock
+application. May be irritating to users, use sparingly and prefer notifications.
+
+### AlarmEmitter
+
+AlarmEmitter is an instance of NativeEventEmitter used to listen specifically to alarm events. It has the same
+interface.
+
+#### AlarmEmitter.addListener(event, callback)
+
+Listen for an alarm (alarm fire events have the exact same name as alarms) or the @boot event.
+
+#### AlarmEmitter.removeAllListeners(event)
+
+Note this does not clear alarms on the Android side, but is recommended when an alarm is removed or no longer
+necessary.
 
 ### Constants
 
@@ -73,37 +128,10 @@ react-native-alarms will make the alarm repeating.
 
 Intervals may also be a number in milliseconds, minimum `60000`.
 
-## Example code
+## Credits
 
-```javascript
-import AlarmAndroid from 'react-native-alarms';
-
-AlarmAndroid.setAlarm('test', AlarmAndroid.ELAPSED_REALTIME, {
-  trigger: 20000, /* required, milliseconds, for elapsed realtime clocks */
-});
-
-/* Alarms are cancelled by name */
-AlarmAndroid.clearAlarm("test");
-
-AlarmAndroid.AlarmEmitter.addListener('test', (e) => {
-  console.log('Received alarm-test');
-  AlarmAndroid.clearAlarm("test");
-});
-
-/* Remove listeners (this will not clear alarms on the Android side, but is recommended when an alarm is removed) */
-AlarmAndroid.AlarmEmitter.removeAllListeners("test");
-
-/* 8AM wakeup alarm */
-AlarmAndroid.setAlarm('test2', AlarmAndroid.RTC_WAKEUP, {
-  // Time fields -- passed to Java's Calendar class. These will default to the current time if not provided
-  // you should most likely set them all.
-  date: 5 // Date of the month
-  hour: 8, minute: 0, second: 0,
-  // If interval is set, alarm will be repeating
-  interval: AlarmAndroid.INTERVAL_DAY 
-});
-
-```
+Some of the code in this library is derived from react-native-push-notifications and should be considered to be under
+the license of that library.
 
 ## Handy ADB commands
 

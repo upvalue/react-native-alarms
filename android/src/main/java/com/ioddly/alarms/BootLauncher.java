@@ -5,35 +5,42 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.ReactContext;
+
 /**
  * Boot launcher. Completely optional; starts the application on boot so that alarms can be restored.
  * May be irritating to users, use sparingly.
  */
 public class BootLauncher extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         if(!(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))) {
             return;
         }
 
-        Log.i("RNAlarms", "received boot event");
-        Class klass = null;
-        try {
-            Intent launch = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
-            klass = Class.forName(launch.getComponent().getClassName());
-        } catch(ClassNotFoundException e) {
-            e.printStackTrace();
-            Log.e("RNAlarms", "failed to find main activity class");
-            return;
-        }
+        Log.i("RNAlarms", "received BOOT_COMPLETED event");
 
-        if(klass == null) {
-            Log.e("RNAlarms", "failed to find main activity class");
+        final String alarmName = "@boot";
+        ReactApplication reapp = ((ReactApplication) context.getApplicationContext());
+        ReactInstanceManager manager = reapp.getReactNativeHost().getReactInstanceManager();
+        ReactContext recontext = manager.getCurrentReactContext();
+        // Probably not necessary
+        if(recontext != null) {
+            Log.i("RNAlarms", "Attempting to fire boot event @boot");
+            AlarmRun.fire(recontext, alarmName);
+        } else {
+            Log.i("RNAlarms", "Application is closed; attempting to launch and fire boot event @boot'");
+            manager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
+                public void onReactContextInitialized(ReactContext context) {
+                    Log.i("RNAlarms", "Attempting to fire boot event @boot");
+                    AlarmRun.fire(context, alarmName);
+                }
+            });
+            if (!manager.hasStartedCreatingInitialContext()) {
+                manager.createReactContextInBackground();
+            }
         }
-
-        Log.e("RNAlarms", "starting activity " + klass.getCanonicalName());
-        Intent mainintent = new Intent(context, klass);
-        mainintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(mainintent);
     }
 }
