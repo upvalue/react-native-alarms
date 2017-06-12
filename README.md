@@ -56,8 +56,8 @@ to the new parameters.
 
 An Error will be thrown if arguments are provided with the incorrect type.
 
-**IF THE APPLICATION HAS BEEN CLOSED, ALARMS GOING OFF WILL RESULT IN THE APPLICATION BEING STARTED. BE AWARE OF THIS
-IF YOU ARE DOING EXPENSIVE THINGS ON APPLICATION START.**
+Note that alarms can result in a new instance of react-native being instantiated if the device has gone idle; be aware
+of this if you're doing expensive things on startup.
 
 ### alarmSetElapsedRealtime(name: string, trigger: number, interval?: number)
 
