@@ -54,7 +54,7 @@ const alarmSetRTC = (name, date, interval, wakeup) => {
     opts.interval = interval;
   }
 
-  return setAlarm(name, wakeup ? RTC : RTC_WAKEUP, opts);
+  return setAlarm(name, wakeup ? RTC_WAKEUP : RTC, opts);
 };
 
 const alarmSetRTCWakeup = (name, date, interval) => {
