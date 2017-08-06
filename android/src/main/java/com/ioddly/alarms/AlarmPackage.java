@@ -17,7 +17,6 @@ public class AlarmPackage implements ReactPackage {
     return Collections.emptyList();
   }
 
-  @Override
   public List<Class<? extends JavaScriptModule>> createJSModules() {
     List<Class<? extends JavaScriptModule>> jsModules = new ArrayList<Class<? extends JavaScriptModule>>(Arrays.asList(AlarmEmitter.class));
     return jsModules;
