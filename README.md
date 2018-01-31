@@ -1,4 +1,4 @@
-A react-native library for interacting with Android alarms. Requires RN 0.44 or greater.
+A react-native library for interacting with Android alarms. Requires RN 0.44 or greater. Includes TypeScript bindings.
 
 ## Warning
 
